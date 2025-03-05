@@ -1,0 +1,10 @@
+export {default as Navbar} from './components/Navbar/Navbar';
+export {default as SignUp} from './components/SignUp/Signup';
+export {default as LogIn} from './components/LogIn/LogIn';
+export {default as Home} from './components/Home/Home';
+export {default as About} from './components/About';
+export {default as Contact} from './components/Contact';
+export {default as PageNotFound} from './components/PageNotFound';
+export {default as Profile} from './components/Profile';
+export {default as Services} from './components/Services';
+export {default as Setting} from './components/Setting';
