@@ -34,8 +34,10 @@ export default function Navbar() {
         </div>
 
         {/* second div */}
-        <Search />
+            <div className='hidden md:flex'>
+            <Search />
 
+            </div>
 
         {/* third div */}
         <div className='hidden md:flex items-center space-x-4'>

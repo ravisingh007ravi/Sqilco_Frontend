@@ -11,6 +11,8 @@ export default function Search() {
             <IoSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl text-gray-400" />
 
         </div>
+        
     );
 }
     
+
