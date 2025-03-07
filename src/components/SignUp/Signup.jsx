@@ -1,30 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
+import axios from 'axios'
+import { useFormik } from "formik";
+import { UserSchema } from '../Validation/AllValidation'
+import {LocalHost} from '../../GlobalURL'
 
 export default function Signup() {
-  const [data, setData] = useState({ name: "", email: "", password: "" });
-  const [error, setError] = useState("");
 
-  const objectData = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
+  const { values, handleSubmit, handleChange, handleBlur, errors, touched } = useFormik({
+    initialValues: { name: "", email: "", password: "" },
+    validationSchema: UserSchema, 
+    onSubmit: async(values) => {
+      
+      const respode = await axios.post(`${LocalHost}createUSer`, values)
+      console.log(respode)
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!data.name || !data.email || !data.password) {
-      setError("All fields are required.");
-      return;
-    }
-    setError("");
-    console.log("Submitted Data:", data);
-  };
+    },
+  });
+  console.log(values)
 
   const INPUTDATA = [
-    { name: 'name', type: 'text', placeholder: 'Enter Your Name' },
-    { name: 'email', type: 'email', placeholder: 'Enter Your Email' },
-    { name: 'password', type: 'password', placeholder: 'Enter Your Password' },
-  ]
-
-
+    { name: "name", type: "text", placeholder: "Enter Your Name" },
+    { name: "email", type: "email", placeholder: "Enter Your Email" },
+    { name: "password", type: "password", placeholder: "Enter Your Password" },
+  ];
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
@@ -32,17 +30,24 @@ export default function Signup() {
         <h2 className="text-2xl font-semibold text-center text-gray-800 mb-4">
           Sign Up
         </h2>
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-
-          {
-            INPUTDATA.map(({ name, type, placeholder }, index) => (
-              <input onChange={objectData} name={name} type={type} placeholder={placeholder} key={index}
-                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          {INPUTDATA.map(({ name, type, placeholder }, index) => (
+            <div key={index}>
+              <input
+                name={name}
+                type={type}
+                placeholder={placeholder}
+                value={values[name]}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
               />
-
-            ))
-          }
+              {touched[name] && errors[name] && (
+                <p className="text-red-500 text-sm">{errors[name]}</p>
+              )}
+            </div>
+          ))}
 
           <button
             type="submit"
