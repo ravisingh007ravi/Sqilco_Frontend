@@ -2,21 +2,44 @@ import React from "react";
 import axios from 'axios'
 import { useFormik } from "formik";
 import { UserSchema } from '../Validation/AllValidation'
-import {LocalHost} from '../../GlobalURL'
+import { LocalHost } from '../../GlobalURL'
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
 
+  const Navigate = useNavigate()
+
   const { values, handleSubmit, handleChange, handleBlur, errors, touched } = useFormik({
     initialValues: { name: "", email: "", password: "" },
-    validationSchema: UserSchema, 
-    onSubmit: async(values) => {
-      
-      const respode = await axios.post(`${LocalHost}createUSer`, values)
-      console.log(respode)
+    validationSchema: UserSchema,
+    onSubmit: async (values) => {
+      try {
+
+        const response = await axios.post(`${LocalHost}createUSer`, values)
+
+        const UserId = response.data.id
+        if (response.status === 200 || response.status === 201) {
+          Navigate(`/otpverification/${UserId}`)
+        }
+
+      }
+      catch (error) {
+        if (!(error.response.data.data.isAccountActive)) alert(error.response?.data?.msg)
+
+        else if ((error.response.data.data.isdelete)) alert(error.response?.data?.msg)
+
+        else if ((error.response.data.data.isVerify)) {
+          alert(error.response?.data?.msg)
+          Navigate('/login')
+        }
+        else{
+          alert(error.response?.data?.msg || "An error occurred")
+        }
+      }
 
     },
   });
-  console.log(values)
+
 
   const INPUTDATA = [
     { name: "name", type: "text", placeholder: "Enter Your Name" },

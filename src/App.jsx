@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Navbar, Home, LogIn, SignUp, About, PageNotFound, Contact, Services, Setting, Profile } from './AllComponents'
+import { Navbar, Home, LogIn, SignUp, About, PageNotFound, Contact, 
+  Services, Setting, Profile, OtpVerification } from './AllComponents'
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path='/setting' element={<Setting />} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/profile' element={<Profile />} />
+        <Route path='/otpverification/:id' element={<OtpVerification />} />
         <Route path='/*' element={<PageNotFound />} />
 
       </Routes>
