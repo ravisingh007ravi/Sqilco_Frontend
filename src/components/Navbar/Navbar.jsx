@@ -4,16 +4,21 @@ import { IoMdClose } from "react-icons/io";
 import DropDownMenu from "./DropDownMenu";
 import Search from './Search'
 import { Link } from 'react-router-dom';
+// import{useAuth} from '../Context/AuthContext'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [log, setLogIn] = useState(true);
 
+  // const { authUser, setAuthUser, isLoggedIn, setLoggedIn } = useAuth();
+
+ 
+
   const MENUDATA = [
-    { name: 'Home', href: '/' },
-    { name: 'About', href: '/about' },
-    { name: 'Services', href: '/service' },
-    { name: 'Contact', href: '/contact' },
+    { name: 'Home', href: '/' ,CSS:'text-red-100'},
+    { name: 'About', href: '/about',CSS:'text-green-100' },
+    { name: 'Services', href: '/service',CSS:'text-pink-100' },
+    { name: 'Contact', href: '/contact',CSS:'text-red-100' },
   ];
 
   return (
@@ -21,7 +26,7 @@ export default function Navbar() {
       <div className='max-w-10xl mx-auto px-6 py-4 flex justify-between items-center'>
 
         {/* first div */}
-        <div className='flex items-center gap-5'>
+        <div className='flex items-center gap-10'>
           <div className='text-2xl font-bold'>Logo</div>
 
           <ul className='hidden md:flex space-x-6'>

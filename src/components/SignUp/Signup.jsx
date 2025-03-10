@@ -4,38 +4,43 @@ import { useFormik } from "formik";
 import { UserSchema } from '../Validation/AllValidation'
 import { LocalHost } from '../../GlobalURL'
 import { useNavigate } from "react-router-dom";
+import { showSuccessToast, showErrorToast } from '../ToastifyNotification/Notofication'
 
 export default function Signup() {
 
   const Navigate = useNavigate()
+  const [isLoading, setIsLoading] = React.useState(false);
+
 
   const { values, handleSubmit, handleChange, handleBlur, errors, touched } = useFormik({
     initialValues: { name: "", email: "", password: "" },
     validationSchema: UserSchema,
     onSubmit: async (values) => {
       try {
-
+        setIsLoading(true);
         const response = await axios.post(`${LocalHost}createUSer`, values)
 
         const UserId = response.data.id
         if (response.status === 200 || response.status === 201) {
+          showSuccessToast('Successfully signed up user')
           Navigate(`/otpverification/${UserId}`)
         }
 
       }
       catch (error) {
-        if (!(error.response.data.data.isAccountActive)) alert(error.response?.data?.msg)
+        if (!(error.response.data.data.isAccountActive)) showErrorToast(error.response?.data?.msg)
 
-        else if ((error.response.data.data.isdelete)) alert(error.response?.data?.msg)
+        else if ((error.response.data.data.isdelete)) showErrorToast(error.response?.data?.msg)
 
         else if ((error.response.data.data.isVerify)) {
-          alert(error.response?.data?.msg)
+          showSuccessToast(error.response?.data?.msg)
           Navigate('/login')
         }
-        else{
-          alert(error.response?.data?.msg || "An error occurred")
+        else {
+          showErrorToast(error.response?.data?.msg || "An error occurred")
         }
       }
+      finally { setIsLoading(false); }
 
     },
   });
@@ -72,12 +77,31 @@ export default function Signup() {
             </div>
           ))}
 
-          <button
+          {/* <button
             type="submit"
             className="bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-200"
           >
-            Sign Up
+            {isLoading ? "Signing Up..." : "Sign Up"}
+          </button> */}
+
+
+          <button
+            type="submit"
+            className={`w-full p-3 rounded-lg transition-all flex items-center justify-center ${isLoading ? "bg-gray-500 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <svg className="animate-spin h-5 w-5 mr-2 border-4 border-white border-t-transparent rounded-full" viewBox="0 0 24 24"></svg>
+                Uploading...
+              </>
+            ) : (
+              "Sign Up"
+            )}
           </button>
+
+
+
         </form>
       </div>
     </div>
