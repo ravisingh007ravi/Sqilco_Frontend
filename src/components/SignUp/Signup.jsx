@@ -5,7 +5,7 @@ import { UserSchema } from "../Validation/AllValidation";
 import { LocalHost } from "../../GlobalURL";
 import { useNavigate } from "react-router-dom";
 import { showSuccessToast, showErrorToast } from "../ToastifyNotification/Notofication";
-import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaImage } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 export default function Signup({ setOtpVerify }) {
@@ -14,50 +14,58 @@ export default function Signup({ setOtpVerify }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const { values, handleSubmit, handleChange, handleBlur, errors, touched } = useFormik({
-    initialValues: { name: "", email: "", password: "", confirmPassword: "" },
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      formik.setFieldValue("userImg", file);
+    }
+  };
+
+  
+  const formik = useFormik({
+    initialValues: { userImg: "", name: "", email: "", password: "", confirmPassword: "" },
     validationSchema: UserSchema,
     onSubmit: async (values) => {
       try {
         setIsLoading(true);
-        const response = await axios.post(`${LocalHost}createUSer`, values);
+        
+        const formData = new FormData();
+        Object.keys(values).forEach((key) => {
+          formData.append(key, values[key]);
+        });
 
-        const userId = response.data.id;
+        const response = await axios.post(`${LocalHost}createUSer`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
         if (response.status === 200 || response.status === 201) {
           showSuccessToast("Successfully signed up user");
-          setOtpVerify(true)
-          navigate(`/otpverification/${userId}`);
+          setOtpVerify(true);
+          navigate(`/otpverification/${response.data.id}`);
         }
       } catch (error) {
-        if (!(error.response.data.data.isAccountActive)) showErrorToast(error.response?.data?.msg);
-        else if (error.response.data.data.isdelete) showErrorToast(error.response?.data?.msg);
-        else if (error.response.data.data.isVerify) {
-          showSuccessToast(error.response?.data?.msg);
-          navigate("/login");
-        } else {
-          showErrorToast(error.response?.data?.msg || "An error occurred");
-        }
+        showErrorToast(error.response?.data?.msg || "An error occurred");
       } finally {
         setIsLoading(false);
       }
     },
   });
 
-  const INPUT_FIELDS = [
+
+  const MENUDATA = [
     { name: "name", type: "text", placeholder: "Enter Your Name", icon: <FaUser /> },
     { name: "email", type: "email", placeholder: "Enter Your Email", icon: <FaEnvelope /> },
     { name: "password", type: "password", placeholder: "Enter Your Password", icon: <FaLock /> },
     { name: "confirmPassword", type: "password", placeholder: "Confirm Your Password", icon: <FaLock /> },
+    { name: "userImg", type: "file", icon: <FaImage /> },
   ];
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
         <h2 className="text-2xl font-semibold text-center text-gray-800 mb-4">Sign Up</h2>
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-
-          {INPUT_FIELDS.map(({ name, type, placeholder, icon }, index) => (
+        <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
+          {MENUDATA.map(({ name, type, placeholder, icon }, index) => (
             <div key={index} className="flex flex-col">
               <div className="relative flex items-center">
                 <span className="absolute left-3 text-gray-500">{icon}</span>
@@ -65,13 +73,13 @@ export default function Signup({ setOtpVerify }) {
                   name={name}
                   type={
                     name === "password" ? (showPassword ? "text" : "password") :
-                      name === "confirmPassword" ? (showConfirmPassword ? "text" : "password") : type
+                    name === "confirmPassword" ? (showConfirmPassword ? "text" : "password") : type
                   }
                   placeholder={placeholder}
-                  value={values[name]}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
+                  onChange={name === "userImg" ? handleFileChange : formik.handleChange}
+                  onBlur={formik.handleBlur}
                   className="border border-gray-300 rounded-md px-10 py-2 w-full focus:ring-2 focus:ring-blue-400"
+                  {...(name !== "userImg" && { value: formik.values[name] })}
                 />
                 {(name === "password" || name === "confirmPassword") && (
                   <button
@@ -88,11 +96,11 @@ export default function Signup({ setOtpVerify }) {
                   </button>
                 )}
               </div>
-              {touched[name] && errors[name] && <p className="text-red-500 text-sm mt-1">{errors[name]}</p>}
+              {formik.touched[name] && formik.errors[name] && (
+                <p className="text-red-500 text-sm mt-1">{formik.errors[name]}</p>
+              )}
             </div>
           ))}
-
-
           <button
             type="submit"
             className={`w-full p-3 rounded-lg transition-all flex items-center justify-center ${isLoading ? "bg-gray-500 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
@@ -100,12 +108,10 @@ export default function Signup({ setOtpVerify }) {
           >
             {isLoading ? "Signing Up..." : "Sign Up"}
           </button>
-
           <div className="text-center mt-3">
             <p className="text-sm text-gray-600">
               Already have an account? <Link to="/login" className="text-blue-600 hover:underline">Login</Link>
             </p>
-           
           </div>
         </form>
       </div>

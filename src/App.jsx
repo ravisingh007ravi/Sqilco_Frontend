@@ -7,7 +7,7 @@ import {
 
 export default function App() {
 
-  const [otpverify, setOtpVerify] = React.useState(false);
+  const [otpverify, setOtpVerify] = React.useState(true);
   const PrivateOtpRoute = ({ otpverify }) => {
     return otpverify ? <Outlet /> : <Navigate replace to="/" />;
   };
