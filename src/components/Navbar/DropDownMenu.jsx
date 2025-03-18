@@ -15,7 +15,7 @@ export default function DropDownMenu() {
       <Menu as="div" className="relative ml-3">
         <div>
           <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
-            <span className="absolute -inset-1.5" />
+            <span className="absolute -inset-1.5" />  
             <span className="sr-only">Open user menu</span>
             <img className="size-8 rounded-full" src="https://res.cloudinary.com/dnpn8ljki/image/upload/v1739856541/yosxx9atkd0k1mjfqxdz.jpg" />
           </MenuButton>

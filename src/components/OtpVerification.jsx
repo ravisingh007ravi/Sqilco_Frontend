@@ -2,15 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { LocalHost } from "../GlobalURL";
 import axios from "axios";
-import {showSuccessToast, showErrorToast} from '../components/ToastifyNotification/Notofication'
+import { showSuccessToast, showErrorToast } from '../components/ToastifyNotification/Notofication'
 
 export default function OtpVerification() {
   const navigate = useNavigate();
   const { id } = useParams();
 
- 
-  
-  const email = sessionStorage.getItem("userEmail");
+
+
+  const email = localStorage.getItem("UserMailId");
 
   const [code, setCode] = useState(new Array(4).fill(""));
   const [isLoading, setIsLoading] = useState(false);
@@ -39,12 +39,13 @@ export default function OtpVerification() {
     try {
       setCanResend(false);
       setTimeLeft(30);
-      const url = `${APIURL}reSendOTP/${id}`;
-      
+      const url = `${LocalHost}ResendUSerOTP/${id}`;
+
+
       await axios.get(url);
       showSuccessToast("New OTP has been sent to your email");
-      
-        const timer = setInterval(() => {
+
+      const timer = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
             clearInterval(timer);
@@ -55,7 +56,7 @@ export default function OtpVerification() {
         });
       }, 1000);
     } catch (err) {
-      window.alert(err.response?.data?.msg || "Failed to resend OTP");
+      showErrorToast(err.response?.data?.msg || "Failed to resend OTP");
     }
   };
 
@@ -80,15 +81,25 @@ export default function OtpVerification() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    const userOtp = code.join("");
+    try {
+      setIsLoading(true);
+      const userOtp = code.join("");
 
-   
+      const url = `${LocalHost}VerifyUserOtp/${id}`;
 
-  
+
+      await axios.post(url, { otp: userOtp });
+      showSuccessToast("New OTP has been sent to your email");
+    }
+
+    catch (err) {
+      showErrorToast(err.response?.data?.msg || "Failed to resend OTP");
+    }
+    finally{
+      setIsLoading(false);
+    }
   };
 
-  console.log(code)
 
   return (
     <div className=" flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 py-12">

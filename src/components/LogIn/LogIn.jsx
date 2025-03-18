@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import { showSuccessToast, showErrorToast } from "../ToastifyNotification/Notofication";
 import { LocalHost } from "../../GlobalURL";
-import { LoginSchema } from "../Validation/AllValidation";
+import { LoginSchema } from "./LogInValidation";
 import { Link } from "react-router-dom";
 
 

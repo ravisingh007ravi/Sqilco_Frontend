@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
-import { UserSchema } from "../Validation/AllValidation";
+import { SignUpSchema } from "./SignUpValidation";
 import { LocalHost } from "../../GlobalURL";
 import { useNavigate } from "react-router-dom";
 import { showSuccessToast, showErrorToast } from "../ToastifyNotification/Notofication";
@@ -21,10 +21,9 @@ export default function Signup({ setOtpVerify }) {
     }
   };
 
-  
   const formik = useFormik({
     initialValues: { userImg: "", name: "", email: "", password: "", confirmPassword: "" },
-    validationSchema: UserSchema,
+    validationSchema: SignUpSchema,
     onSubmit: async (values) => {
       try {
         setIsLoading(true);
@@ -34,13 +33,11 @@ export default function Signup({ setOtpVerify }) {
           formData.append(key, values[key]);
         });
 
-        const response = await axios.post(`${LocalHost}createUSer`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
+        const response = await axios.post(`${LocalHost}createUSer`, formData);
         if (response.status === 200 || response.status === 201) {
           showSuccessToast("Successfully signed up user");
           setOtpVerify(true);
+          localStorage.setItem("UserMailId",response.data.email)
           navigate(`/otpverification/${response.data.id}`);
         }
       } catch (error) {
