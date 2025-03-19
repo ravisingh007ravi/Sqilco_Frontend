@@ -27,7 +27,7 @@ export default function Signup({ setOtpVerify }) {
     onSubmit: async (values) => {
       try {
         setIsLoading(true);
-        
+
         const formData = new FormData();
         Object.keys(values).forEach((key) => {
           formData.append(key, values[key]);
@@ -37,11 +37,15 @@ export default function Signup({ setOtpVerify }) {
         if (response.status === 200 || response.status === 201) {
           showSuccessToast("Successfully signed up user");
           setOtpVerify(true);
-          localStorage.setItem("UserMailId",response.data.email)
+
+          sessionStorage.setItem("UserMailId", response.data.email)
           navigate(`/otpverification/${response.data.id}`);
         }
       } catch (error) {
-        showErrorToast(error.response?.data?.msg || "An error occurred");
+     
+        if (error.response?.data?.data?.isVerify) navigate('/login')
+
+        else showErrorToast(error.response?.data?.msg || "An error occurred");
       } finally {
         setIsLoading(false);
       }
@@ -70,7 +74,7 @@ export default function Signup({ setOtpVerify }) {
                   name={name}
                   type={
                     name === "password" ? (showPassword ? "text" : "password") :
-                    name === "confirmPassword" ? (showConfirmPassword ? "text" : "password") : type
+                      name === "confirmPassword" ? (showConfirmPassword ? "text" : "password") : type
                   }
                   placeholder={placeholder}
                   onChange={name === "userImg" ? handleFileChange : formik.handleChange}

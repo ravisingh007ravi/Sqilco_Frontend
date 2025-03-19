@@ -30,6 +30,7 @@ export default function Login() {
           navigate("/"); 
         }
       } catch (error) {
+        console.log(error.response.data)
         showErrorToast(error.response?.data?.msg || "Invalid Credentials");
       } finally {
         setIsLoading(false);

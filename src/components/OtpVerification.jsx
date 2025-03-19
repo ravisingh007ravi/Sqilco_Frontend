@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { LocalHost } from "../GlobalURL";
 import axios from "axios";
-import { showSuccessToast, showErrorToast } from '../components/ToastifyNotification/Notofication'
+import { showSuccessToast, showErrorToast } from './ToastifyNotification/Notofication'
 
 export default function OtpVerification() {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ export default function OtpVerification() {
 
 
 
-  const email = localStorage.getItem("UserMailId");
+  const email = sessionStorage.getItem("UserMailId");
 
   const [code, setCode] = useState(new Array(4).fill(""));
   const [isLoading, setIsLoading] = useState(false);
