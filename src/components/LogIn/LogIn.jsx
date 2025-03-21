@@ -27,11 +27,19 @@ export default function Login() {
 
         if (response.status === 200) {
           showSuccessToast("Successfully Logged In");
-          navigate("/"); 
+          navigate("/");
         }
       } catch (error) {
-        console.log(error.response.data)
-        showErrorToast(error.response?.data?.msg || "Invalid Credentials");
+
+        if (error.response.data.msg=='User Not Found'){
+          showErrorToast(error.response?.data?.msg);
+          navigate(`/signup`);
+        } 
+          
+       else if (!error.response.data.data.isVerify) {
+          navigate(`/otpverification/${error.response.data.data._id}`);
+        }
+        else showErrorToast(error.response?.data?.msg || "Invalid Credentials");
       } finally {
         setIsLoading(false);
       }
@@ -42,6 +50,26 @@ export default function Login() {
     { name: "email", type: "email", placeholder: "Enter Your Email", icon: <FaEnvelope /> },
     { name: "password", type: "password", placeholder: "Enter Your Password", icon: <FaLock /> },
   ];
+
+  const AdminAPI = async () => {
+    try{
+      setIsLoading(true);
+      const AdminURL = `${LocalHost}LogInAdmin` ;
+      const response = await axios.post(AdminURL, values);
+
+      console.log(response);
+      if (response.status === 200) {
+        showSuccessToast("Successfully Logged In");
+        // navigate("/admin");
+      }
+    }
+    catch(error){
+      showErrorToast(error.response?.data?.msg || "Something went wrong");
+    }
+    finally{
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
@@ -83,6 +111,15 @@ export default function Login() {
             disabled={isLoading}
           >
             {isLoading ? "Logging In..." : "Login"}
+          </button>
+
+          <button
+            onClick={AdminAPI}
+            type="submit"
+            className={`w-full p-3 rounded-lg transition-all flex items-center justify-center ${isLoading ? "bg-gray-500 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
+            disabled={isLoading}
+          >
+            {isLoading ? "Logging In..." : "Admin"}
           </button>
 
           <div className="text-center mt-3">

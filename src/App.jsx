@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import {
   Navbar, Home, LogIn, SignUp, About, PageNotFound, Contact,
-  Services, Setting, Profile, OtpVerification, Fotoer
+  Services, Setting, Profile, OtpVerification, Fotoer, AdminHome
 } from './AllComponents'
 
 export default function App() {
@@ -33,6 +33,7 @@ export default function App() {
         {/* Private Routes */}
         <Route element={<PrivateOtpRoute otpverify={otpverify} />}>
           <Route path='/otpverification/:id' element={<OtpVerification />} />
+          <Route path='/adminHome' element={<AdminHome />} />
         </Route>
 
       </Routes>
