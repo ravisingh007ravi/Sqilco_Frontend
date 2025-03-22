@@ -7,6 +7,7 @@ import { showSuccessToast, showErrorToast } from "../ToastifyNotification/Notofi
 import { LocalHost } from "../../GlobalURL";
 import { LoginSchema } from "./LogInValidation";
 import { Link } from "react-router-dom";
+import { useAuth } from "../Contexts/AuthContext";
 
 
 export default function Login() {
@@ -14,7 +15,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-
+  const { setIsLoggedIn } = useAuth();
 
   const { values, handleSubmit, handleChange, handleBlur, errors, touched } = useFormik({
     initialValues: { email: "", password: "" },
@@ -25,8 +26,11 @@ export default function Login() {
         setIsLoading(true);
         const response = await axios.post(`${LocalHost}loginUser`, values);
 
+        localStorage.setItem("profileImg", response.data.profileImage);
+
         if (response.status === 200) {
           showSuccessToast("Successfully Logged In");
+          setIsLoggedIn(true);
           navigate("/");
         }
       } catch (error) {

@@ -89,7 +89,8 @@ export default function OtpVerification() {
 
 
       await axios.post(url, { otp: userOtp });
-      showSuccessToast("New OTP has been sent to your email");
+      showSuccessToast("OTP verified successfully");
+      navigate("/login");
     }
 
     catch (err) {
