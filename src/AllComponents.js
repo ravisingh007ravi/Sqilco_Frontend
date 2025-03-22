@@ -11,3 +11,4 @@ export {default as Setting} from './components/Setting';
 export {default as OtpVerification} from './components/OtpVerification';
 export {default as Fotoer} from './components/Fotoer';
 export {default as AdminHome} from './components/Admin/AdminHome';
+export {default as HomeTest} from './components/test/HomeTest';

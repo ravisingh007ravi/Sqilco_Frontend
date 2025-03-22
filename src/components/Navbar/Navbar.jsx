@@ -22,7 +22,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className='bg-gray-800 text-white shadow-md'>
+    <nav className='fixed w-full top-0 z-50 bg-gray-800 text-white shadow-md'>
       <div className='max-w-10xl mx-auto px-6 py-4 flex justify-between items-center'>
 
         {/* first div */}
