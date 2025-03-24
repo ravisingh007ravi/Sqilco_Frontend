@@ -29,7 +29,7 @@ export default function DropDownMenu() {
             <span className="absolute -inset-1.5" />
             <span className="sr-only">Open user menu</span>
             {UserIMG ? (
-              <img className="size-8 rounded-full" src={UserIMG} alt="User Profile" />
+              <img className="size-10 rounded-full" src={UserIMG} alt="User Profile" />
             ) : (
               <FaUser className="size-8 text-white bg-gray-600 rounded-full p-1" />
             )}

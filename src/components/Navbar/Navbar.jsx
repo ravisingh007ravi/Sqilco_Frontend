@@ -8,7 +8,7 @@ import { useAuth } from '../Contexts/AuthContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { isLoggedIn, setIsLoggedIn } = useAuth();
+  const { isLoggedIn } = useAuth();
 
   const MENUDATA = [
     { name: 'Home', href: '/', CSS: 'text-red-100' },
