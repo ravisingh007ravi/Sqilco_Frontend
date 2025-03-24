@@ -1,2 +1,3 @@
 export const LocalHost = 'http://localhost:3000/'
-// const Deployment = 'https://moviealltimeserver.onrender.com/'
+// export const LocalHost = 'https://sqilcobackend.onrender.com'
+

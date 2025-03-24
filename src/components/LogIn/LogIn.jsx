@@ -13,6 +13,7 @@ import { useAuth } from "../Contexts/AuthContext";
 export default function Login() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isAdminLoading, setIsAdminLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const { setIsLoggedIn } = useAuth();
@@ -24,6 +25,7 @@ export default function Login() {
     onSubmit: async (values) => {
       try {
         setIsLoading(true);
+      
         const response = await axios.post(`${LocalHost}loginUser`, values);
 
         localStorage.setItem("profileImg", response.data.profileImage);
@@ -34,13 +36,14 @@ export default function Login() {
           navigate("/");
         }
       } catch (error) {
-
-        if (error.response.data.msg=='User Not Found'){
+        console.log(error.response.data)
+        if (error.response.data.msg == 'User Not Found') {
           showErrorToast(error.response?.data?.msg);
           navigate(`/signup`);
-        } 
-          
-       else if (!error.response.data.data.isVerify) {
+        }
+        else if (error.response.data.msg == 'Wrong Password') { showErrorToast(error.response?.data?.msg); }
+
+        else if (!error.response.data.data.isVerify) {
           navigate(`/otpverification/${error.response.data.data._id}`);
         }
         else showErrorToast(error.response?.data?.msg || "Invalid Credentials");
@@ -56,9 +59,9 @@ export default function Login() {
   ];
 
   const AdminAPI = async () => {
-    try{
-      setIsLoading(true);
-      const AdminURL = `${LocalHost}LogInAdmin` ;
+    try {
+      setIsAdminLoading(true);
+      const AdminURL = `${LocalHost}LogInAdmin`;
       const response = await axios.post(AdminURL, values);
 
       console.log(response);
@@ -67,11 +70,11 @@ export default function Login() {
         // navigate("/admin");
       }
     }
-    catch(error){
+    catch (error) {
       showErrorToast(error.response?.data?.msg || "Something went wrong");
     }
-    finally{
-      setIsLoading(false);
+    finally {
+      setIsAdminLoading(false);
     }
   }
 
@@ -120,10 +123,10 @@ export default function Login() {
           <button
             onClick={AdminAPI}
             type="submit"
-            className={`w-full p-3 rounded-lg transition-all flex items-center justify-center ${isLoading ? "bg-gray-500 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
-            disabled={isLoading}
+            className={`w-full p-3 rounded-lg transition-all flex items-center justify-center ${isAdminLoading ? "bg-gray-500 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
+            disabled={isAdminLoading}
           >
-            {isLoading ? "Logging In..." : "Admin"}
+            {isAdminLoading ? "Logging In..." : "Admin"}
           </button>
 
           <div className="text-center mt-3">

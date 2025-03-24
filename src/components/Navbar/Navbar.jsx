@@ -4,11 +4,11 @@ import { IoMdClose } from "react-icons/io";
 import DropDownMenu from "./DropDownMenu";
 import Search from './Search'
 import { Link } from 'react-router-dom';
-import { useAuth } from '../Contexts/AuthContext';  
+import { useAuth } from '../Contexts/AuthContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { isLoggedIn, setIsLoggedIn } = useAuth(); 
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
 
   const MENUDATA = [
     { name: 'Home', href: '/', CSS: 'text-red-100' },
@@ -40,12 +40,12 @@ export default function Navbar() {
         </div>
 
         {/* third div */}
-        <div className='hidden md:flex items-center space-x-4'>
+        <div className=' items-center space-x-4'>
           {isLoggedIn ? (
-            <DropDownMenu />
+            <DropDownMenu className='pl-32' />
           ) : (
             <Link to='/login'>
-              <button className='px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition'>
+              <button className='hidden md:flex px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition'>
                 Sign/LogIn
               </button>
             </Link>
@@ -53,10 +53,18 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu Button */}
-        <div className='md:hidden text-2xl cursor-pointer' onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <IoMdClose /> : <FaBars />}
+
+        <div className='flex gap-5 md:hidden mr-8'>
+
+          <div className=' text-2xl cursor-pointer' onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <IoMdClose /> : <FaBars />}
+          </div>
+
         </div>
+
+
       </div>
+
 
       {/* Mobile Menu */}
       {isOpen && (
