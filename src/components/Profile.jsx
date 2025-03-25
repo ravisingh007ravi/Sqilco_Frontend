@@ -27,10 +27,10 @@ export default function Profile() {
 
         <div className="hidden md:flex w-1/2 bg-black bg-opacity-30 items-center justify-center p-8">
           <div className="relative">
-            <img 
-              src={profileImage} 
-              alt="Profile" 
-              className="w-64 h-64 md:w-80 md:h-80 rounded-full object-cover border-8 border-white border-opacity-20 shadow-2xl" 
+            <img
+              src={profileImage}
+              alt="Profile"
+              className="w-64 h-64 md:w-80 md:h-80 rounded-full object-cover border-8 border-white border-opacity-20 shadow-2xl"
             />
             <label className="absolute bottom-4 right-4 bg-gray-900 p-3 rounded-full cursor-pointer hover:bg-gray-800 transition-all">
               <input type="file" className="hidden" onChange={handleImageChange} />
@@ -110,10 +110,10 @@ export default function Profile() {
 
         <div className="md:hidden absolute top-8 left-0 right-0 flex justify-center">
           <div className="relative">
-            <img 
-              src={profileImage} 
-              alt="Profile" 
-              className="w-32 h-32 rounded-full object-cover border-4 border-white border-opacity-20 shadow-lg" 
+            <img
+              src={profileImage}
+              alt="Profile"
+              className="w-32 h-32 rounded-full object-cover border-4 border-white border-opacity-20 shadow-lg"
             />
             <label className="absolute bottom-0 right-0 bg-gray-900 p-2 rounded-full cursor-pointer">
               <input type="file" className="hidden" onChange={handleImageChange} />
