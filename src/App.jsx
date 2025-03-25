@@ -42,15 +42,15 @@ function MainRoutes({ otpverify, setOtpVerify }) {
         <Route path='/signup' element={<SignUp setOtpVerify={setOtpVerify} />} />
         <Route path='/about' element={<About />} />
         <Route path='/service' element={<Services />} />
-        <Route path='/setting' element={<Setting />} />
         <Route path='/contact' element={<Contact />} />
-        <Route path='/profile' element={<Profile />} />
         <Route path='/*' element={<PageNotFound />} />
 
         {/* Private Routes */}
         <Route element={<PrivateOtpRoute />}>
           <Route path='/otpverification/:id' element={<OtpVerification />} />
           <Route path='/adminHome' element={<AdminHome />} />
+        <Route path='/profile' element={<Profile />} />
+        <Route path='/setting' element={<Setting />} />
         </Route>
       </Routes>
 

@@ -5,19 +5,20 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../Contexts/AuthContext';
 
 export default function DropDownMenu() {
-  const { setIsLoggedIn } = useAuth();
+  const { setIsLoggedIn,setUserImage, UserImage } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    setUserImage(null)
     setIsLoggedIn(false);
     navigate('/');
   };
 
-  const UserIMG = localStorage.getItem('profileImg');
+  const UserIMG = UserImage
 
   const DROPDOWNMENUDATA = [
     { name: 'Your Profile', href: '/profile', icon: <FaUser className="size-4 mr-2" /> },
-    { name: 'Settings', href: '/settings', icon: <FaCog className="size-4 mr-2" /> },
+    { name: 'Settings', href: '/setting', icon: <FaCog className="size-4 mr-2" /> },
     { name: 'Logout', onClick: handleLogout, icon: <FaSignOutAlt className="size-4 mr-2" /> },
   ];
 

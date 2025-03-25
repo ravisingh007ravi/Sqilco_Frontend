@@ -16,7 +16,7 @@ export default function Login() {
   const [isAdminLoading, setIsAdminLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const { setIsLoggedIn } = useAuth();
+  const { setIsLoggedIn, setUserImage, setUserData } = useAuth();
 
   const { values, handleSubmit, handleChange, handleBlur, errors, touched } = useFormik({
     initialValues: { email: "", password: "" },
@@ -27,16 +27,22 @@ export default function Login() {
         setIsLoading(true);
       
         const response = await axios.post(`${LocalHost}loginUser`, values);
-
-        localStorage.setItem("profileImg", response.data.profileImage);
+        
 
         if (response.status === 200) {
           showSuccessToast("Successfully Logged In");
           setIsLoggedIn(true);
+          setUserImage(response.data.profileImage)
+
+          setUserData({
+            name: response.data.name,
+            email: response.data.email,
+            UserImg: response.data.profileImage
+          })
           navigate("/");
         }
       } catch (error) {
-        console.log(error.response.data)
+        
         if (error.response.data.msg == 'User Not Found') {
           showErrorToast(error.response?.data?.msg);
           navigate(`/signup`);

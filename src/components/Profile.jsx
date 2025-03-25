@@ -1,84 +1,126 @@
 import React, { useState } from "react";
-import { FaFacebookF, FaInstagram, FaTwitter, FaDribbble, FaCamera } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaLinkedin, FaTwitter, FaCamera } from "react-icons/fa";
+import { useAuth } from "./Contexts/AuthContext";
 
 export default function Profile() {
-  const [name, setName] = useState("Olivia Morgan");
-  const [email, setEmail] = useState("@oliviamorgan");
-  const [profileImage, setProfileImage] = useState("https://via.placeholder.com/100");
+  const { userData } = useAuth();
+  const [profileImage, setProfileImage] = useState(userData?.UserImg);
   const [editMode, setEditMode] = useState(false);
+  const [formData, setFormData] = useState({
+    name: userData?.name || "Ravi Singh",
+    email: userData?.email || "Ravi@gmail.com",
+    bio: "Passionate designer & developer, creating stunning digital experiences."
+  });
 
-  // Handle image upload
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl);
-    }
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Toggle edit mode
-  const toggleEditMode = () => {
-    setEditMode(!editMode);
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) setProfileImage(URL.createObjectURL(file));
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
-      <div className="relative bg-white bg-opacity-10 backdrop-blur-lg shadow-lg rounded-xl p-6 w-80 text-center border border-gray-200/30">
-        
-        {/* Profile Image */}
-        <div className="relative w-24 h-24 mx-auto rounded-full overflow-hidden border-4 border-white shadow-lg">
-          <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
-          <label className="absolute bottom-0 right-0 bg-gray-900 p-2 rounded-full cursor-pointer">
-            <input type="file" className="hidden" onChange={handleImageChange} />
-            <FaCamera className="text-white text-xs" />
-          </label>
+    <div className="fixed inset-0 bg-gradient-to-br from-gray-900 to-gray-800 overflow-auto">
+      <div className="flex h-full w-full">
+
+        <div className="hidden md:flex w-1/2 bg-black bg-opacity-30 items-center justify-center p-8">
+          <div className="relative">
+            <img 
+              src={profileImage} 
+              alt="Profile" 
+              className="w-64 h-64 md:w-80 md:h-80 rounded-full object-cover border-8 border-white border-opacity-20 shadow-2xl" 
+            />
+            <label className="absolute bottom-4 right-4 bg-gray-900 p-3 rounded-full cursor-pointer hover:bg-gray-800 transition-all">
+              <input type="file" className="hidden" onChange={handleImageChange} />
+              <FaCamera className="text-white" />
+            </label>
+          </div>
         </div>
 
-        {/* Editable Name & Email */}
-        <div className="mt-4">
-          {editMode ? (
-            <>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="text-lg font-semibold text-white bg-transparent border-b border-gray-400 focus:outline-none text-center"
-              />
-              <input
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="text-sm text-gray-300 bg-transparent border-b border-gray-400 focus:outline-none text-center mt-1"
-              />
-            </>
-          ) : (
-            <>
-              <h2 className="text-xl font-semibold text-white">{name}</h2>
-              <p className="text-gray-300 text-sm">{email}</p>
-            </>
-          )}
+        <div className="w-full md:w-1/2 flex items-center justify-center p-8 overflow-y-auto">
+          <div className="max-w-md w-full">
+
+            <div className="mb-8">
+              {editMode ? (
+                <>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="text-3xl md:text-4xl font-bold text-white bg-transparent border-b border-gray-400 focus:outline-none w-full mb-4"
+                    placeholder="Your Name"
+                  />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="text-xl text-gray-300 bg-transparent border-b border-gray-400 focus:outline-none w-full"
+                    placeholder="your@email.com"
+                  />
+                </>
+              ) : (
+                <>
+                  <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{formData.name}</h1>
+                  <p className="text-xl text-gray-300">{formData.email}</p>
+                </>
+              )}
+            </div>
+
+            <div className="mb-8">
+              {editMode ? (
+                <textarea
+                  name="bio"
+                  value={formData.bio}
+                  onChange={handleChange}
+                  className="text-gray-300 bg-transparent border border-gray-400 rounded-lg focus:outline-none w-full p-2 h-32"
+                  placeholder="Tell us about yourself..."
+                />
+              ) : (
+                <p className="text-gray-300 text-lg">{formData.bio}</p>
+              )}
+            </div>
+
+            <div className="flex space-x-6 mb-8">
+              <a href="#" className="text-gray-400 hover:text-blue-500 transition-colors">
+                <FaFacebookF className="text-2xl" />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-pink-600 transition-colors">
+                <FaInstagram className="text-2xl" />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+                <FaLinkedin className="text-2xl" />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-blue-300 transition-colors">
+                <FaTwitter className="text-2xl" />
+              </a>
+            </div>
+
+            <button
+              onClick={() => setEditMode(!editMode)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg font-medium shadow-lg transition-all"
+            >
+              {editMode ? "Save Profile" : "Edit Profile"}
+            </button>
+          </div>
         </div>
 
-        {/* Social Icons */}
-        <div className="flex justify-center space-x-4 mt-4">
-          <FaDribbble className="text-gray-400 hover:text-pink-500 cursor-pointer text-lg transition-all" />
-          <FaFacebookF className="text-gray-400 hover:text-blue-500 cursor-pointer text-lg transition-all" />
-          <FaInstagram className="text-gray-400 hover:text-purple-500 cursor-pointer text-lg transition-all" />
-          <FaTwitter className="text-gray-400 hover:text-blue-400 cursor-pointer text-lg transition-all" />
+        <div className="md:hidden absolute top-8 left-0 right-0 flex justify-center">
+          <div className="relative">
+            <img 
+              src={profileImage} 
+              alt="Profile" 
+              className="w-32 h-32 rounded-full object-cover border-4 border-white border-opacity-20 shadow-lg" 
+            />
+            <label className="absolute bottom-0 right-0 bg-gray-900 p-2 rounded-full cursor-pointer">
+              <input type="file" className="hidden" onChange={handleImageChange} />
+              <FaCamera className="text-white text-xs" />
+            </label>
+          </div>
         </div>
-
-        {/* Description */}
-        <p className="text-gray-300 text-sm mt-4 px-4">
-          Passionate designer & developer, creating stunning digital experiences.
-        </p>
-
-        {/* Edit & Save Button */}
-        <button
-          onClick={toggleEditMode}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 mt-4 rounded-full shadow-md transition-all"
-        >
-          {editMode ? "Save Changes" : "Edit Profile"}
-        </button>
       </div>
     </div>
   );

@@ -7,9 +7,12 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-    const [isLoggedIn, setIsLoggedIn] = useState(false); 
 
-    const value = { isLoggedIn, setIsLoggedIn };
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [UserImage, setUserImage] = useState(null);
+    const [userData, setUserData] = useState({});
+
+    const value = { isLoggedIn, setIsLoggedIn, UserImage, setUserImage, userData, setUserData };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
