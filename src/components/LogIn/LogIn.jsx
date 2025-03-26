@@ -34,6 +34,9 @@ export default function Login() {
           setIsLoggedIn(true);
           setUserImage(response.data.profileImage)
 
+          localStorage.setItem("Usertoken", response.data.token);
+          localStorage.setItem("userId", response.data.id);
+
           setUserData({
             name: response.data.name,
             email: response.data.email,
