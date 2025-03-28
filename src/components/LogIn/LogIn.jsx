@@ -76,7 +76,7 @@ export default function Login() {
       console.log(response);
       if (response.status === 200) {
         showSuccessToast("Successfully Logged In");
-        // navigate("/admin");
+        navigate("/adminHome");
       }
     }
     catch (error) {

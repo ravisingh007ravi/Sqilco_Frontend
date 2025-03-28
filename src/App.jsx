@@ -23,10 +23,8 @@ export default function App() {
 function MainRoutes({ otpverify, setOtpVerify }) {
   const location = useLocation();
 
-  // Define private routes
-  const privateRoutes = ['/otpverification', '/adminHome'];
+  const privateRoutes = ['/otpverification', '/adminHome','/setting'];
 
-  // Check if the current route is private
   const isPrivateRoute = privateRoutes.some(route => location.pathname.startsWith(route));
 
   const PrivateOtpRoute = () => {
@@ -49,8 +47,8 @@ function MainRoutes({ otpverify, setOtpVerify }) {
         <Route element={<PrivateOtpRoute />}>
           <Route path='/otpverification/:id' element={<OtpVerification />} />
           <Route path='/adminHome' element={<AdminHome />} />
-        <Route path='/profile' element={<Profile />} />
-        <Route path='/setting' element={<Setting />} />
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/setting' element={<Setting />} />
         </Route>
       </Routes>
 
