@@ -53,7 +53,7 @@ export default function Login() {
         else if (error.response.data.msg == 'Wrong Password') { showErrorToast(error.response?.data?.msg); }
 
         else if (!error.response.data.data.isVerify) {
-          navigate(`/otpverification/${error.response.data.data._id}`);
+          navigate(`/otpverification/userLogin/${error.response.data.data._id}`);
         }
         else showErrorToast(error.response?.data?.msg || "Invalid Credentials");
       } finally {

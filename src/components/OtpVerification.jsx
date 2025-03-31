@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { LocalHost } from "../GlobalURL";
 import axios from "axios";
-import { showSuccessToast, showErrorToast } from './ToastifyNotification/Notofication'
+import { showSuccessToast, showErrorToast } from "./ToastifyNotification/Notofication";
 
 export default function OtpVerification() {
   const navigate = useNavigate();
-  const { id } = useParams();
-
-
-
+  const { id, type } = useParams();
   const email = sessionStorage.getItem("UserMailId");
 
   const [code, setCode] = useState(new Array(4).fill(""));
   const [isLoading, setIsLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(30);
   const [canResend, setCanResend] = useState(false);
+
+  // Create a useRef array to store input references
+  const inputRefs = useRef([]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -32,7 +32,6 @@ export default function OtpVerification() {
     return () => clearInterval(timer);
   }, []);
 
-
   const handleResendOTP = async () => {
     if (!canResend) return;
 
@@ -40,8 +39,6 @@ export default function OtpVerification() {
       setCanResend(false);
       setTimeLeft(30);
       const url = `${LocalHost}ResendUSerOTP/${id}`;
-
-
       await axios.get(url);
       showSuccessToast("New OTP has been sent to your email");
 
@@ -69,49 +66,61 @@ export default function OtpVerification() {
     setCode(newCode);
 
     if (value && index < code.length - 1) {
-      document.getElementById(`otp-input-${index + 1}`).focus();
+      inputRefs.current[index + 1]?.focus();
     }
   };
 
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace" && !code[index] && index > 0) {
-      document.getElementById(`otp-input-${index - 1}`).focus();
+      inputRefs.current[index - 1]?.focus();
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    
     try {
-      setIsLoading(true);
       const userOtp = code.join("");
-
-      const url = `${LocalHost}VerifyUserOtp/${id}`;
-
-
-      await axios.post(url, { otp: userOtp });
-      showSuccessToast("OTP verified successfully");
+  
+      if (!userOtp || userOtp.length !== 4) {
+        showErrorToast("Please enter a valid 4-digit OTP.");
+        return;
+      }
+  
+      let url = "";
+      if (type === "userLogin") {
+        url = `${LocalHost}VerifyUserOtp/${id}`;
+      } else if (type === "NewEmail") {
+        url = `${LocalHost}verifyUserEmail/${id}`;
+      } else {
+        showErrorToast("Invalid verification type.");
+        return;
+      }
+  
+      await axios.post(url, { otp: userOtp }, { headers: { "x-api-key": localStorage.getItem("Usertoken") } });
+      showSuccessToast(err.response?.data?.msg);
       navigate("/login");
-    }
-
-    catch (err) {
-      showErrorToast(err.response?.data?.msg || "Failed to resend OTP");
-    }
-    finally{
+    } catch (err) {
+      showErrorToast(err.response?.data?.msg || "Failed to verify OTP");
+    } finally {
       setIsLoading(false);
     }
   };
-
+  
 
   return (
-    <div className=" flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 py-12">
-      <div className=" bg-white px-6 pt-10 pb-9 shadow-xl mx-auto w-full max-w-lg rounded-2xl">
+    <div className="flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 py-12">
+      <div className="bg-white px-6 pt-10 pb-9 shadow-xl mx-auto w-full max-w-lg rounded-2xl">
         <div className="mx-auto flex w-full max-w-md flex-col space-y-16">
           <div className="flex flex-col items-center justify-center text-center space-y-2">
             <div className="font-semibold text-3xl">
               <p>Email Verification</p>
             </div>
             <div className="flex flex-row text-sm font-medium text-gray-400">
-              <p>We have sent a code to your email - <span className="font-bold">{email}</span></p>
+              <p>
+                We have sent a code to your email - <span className="font-bold">{email}</span>
+              </p>
             </div>
           </div>
 
@@ -122,7 +131,7 @@ export default function OtpVerification() {
                   {code.map((data, index) => (
                     <div key={index} className="w-16 h-16">
                       <input
-                        id={`otp-input-${index}`}
+                        ref={(el) => (inputRefs.current[index] = el)} 
                         className="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
                         type="text"
                         maxLength="1"
@@ -142,18 +151,14 @@ export default function OtpVerification() {
                       disabled={isLoading}
                       className="flex flex-row items-center justify-center text-center w-full border rounded-xl outline-none py-5 bg-blue-700 border-none text-white text-sm shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {isLoading ? 'Verifying...' : 'Verify Account'}
+                      {isLoading ? "Verifying..." : "Verify Account"}
                     </button>
                   </div>
 
                   <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
                     <p>Didn't receive code?</p>
                     {canResend ? (
-                      <button
-                        type="button"
-                        onClick={handleResendOTP}
-                        className="text-blue-600 cursor-pointer"
-                      >
+                      <button type="button" onClick={handleResendOTP} className="text-blue-600 cursor-pointer">
                         Resend
                       </button>
                     ) : (
@@ -168,5 +173,4 @@ export default function OtpVerification() {
       </div>
     </div>
   );
-};
-
+}

@@ -6,10 +6,13 @@ import { getEMailChangeSchema } from './AllValidation';
 import { showSuccessToast, showErrorToast } from '../ToastifyNotification/Notofication';
 import { LocalHost } from '../../GlobalURL';
 import axios from 'axios'
+import {useNavigate} from 'react-router-dom'
 
 export default function ChangeUserEmail() {
   const { userData } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+
+  const Navigate = useNavigate()
 
   const formik = useFormik({
     initialValues: { newEmail: '', currentPassword: '' },
@@ -20,14 +23,17 @@ export default function ChangeUserEmail() {
         const token = localStorage.getItem('Usertoken');
         const userId = localStorage.getItem('userId');
 
-        const response = await axios.put(`${LocalHost}updateUserEmail/${userId}`, data, { headers: { 'x-api-key': token } });
+        const response = await axios.put(`${LocalHost}updateUserEmail/${userId}`, 
+          data, { headers: { 'x-api-key': token } });
 
+        if(response.status === 200){
+          showSuccessToast(response?.data?.msg);
+          resetForm();
+          Navigate(`/otpverification/NewEmail/${userId}`)
+        }
 
-
-        showSuccessToast('Email updated successfully!');
-        resetForm();
       } catch (err) {
-        showErrorToast(err.response?.data?.message || err.message || 'An error occurred');
+        showErrorToast(err.response?.data?.msg || err.message || 'An error occurred');
       } finally {
         setSubmitting(false);
       }

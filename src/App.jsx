@@ -45,7 +45,7 @@ function MainRoutes({ otpverify, setOtpVerify }) {
 
         {/* Private Routes */}
         <Route element={<PrivateOtpRoute />}>
-          <Route path='/otpverification/:id' element={<OtpVerification />} />
+          <Route path='/otpverification/:type/:id' element={<OtpVerification />} />
           <Route path='/adminHome' element={<AdminHome />} />
           <Route path='/profile' element={<Profile />} />
           <Route path='/setting' element={<Setting />} />
